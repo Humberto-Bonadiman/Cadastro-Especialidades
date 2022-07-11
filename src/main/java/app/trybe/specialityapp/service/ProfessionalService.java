@@ -4,6 +4,7 @@ import app.trybe.specialityapp.model.Professional;
 import app.trybe.specialityapp.repository.ProfessionalRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,12 @@ public class ProfessionalService {
     return repository.save(getProfessional);
   }
 
+  /**
+   * delete professional.
+   */
   public void deleteProfessionalById(Integer id) {
-    repository.deleteById(id);
+    Professional professional =
+        repository.findById(id).orElseThrow(() -> new NoSuchElementException());
+    repository.deleteById(professional.getId());
   }
 }

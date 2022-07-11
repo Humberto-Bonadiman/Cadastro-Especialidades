@@ -47,8 +47,8 @@ public class ProfessionalController {
    */
   @POST
   @Path("/add")
-  @Consumes("application/json")
-  @Produces("application/json")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response insert(Professional professional) {
     if (professional.getId() != null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(
@@ -65,8 +65,8 @@ public class ProfessionalController {
    */
   @PUT
   @Path("/edit/{id}")
-  @Consumes("application/json")
-  @Produces("application/json")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response edit(@PathParam("id") Integer id, Professional professional) {
     try {
       service.updateProfessional(professional, id);
@@ -84,18 +84,19 @@ public class ProfessionalController {
    */
   @DELETE
   @Path("/delete/{id}")
-  @Consumes("application/json")
-  @Produces("application/json")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response delete(@PathParam("id") Integer id) {
     try {
       service.deleteProfessionalById(id);
-      return Response.status(Response.Status.OK).entity("ID [" + id + "] removido").build();
+      return Response.ok("ID [" + id + "] removido").build();
     } catch (NoSuchElementException e) {
       return Response.status(404)
           .entity(
-          new ApplicationError(
-          Response.Status.NOT_FOUND,
-          "Não é possível deletar, o ID informado não existe"))
+              new ApplicationError(
+                Response.Status.NOT_FOUND,
+                "Não é possível deletar, o ID informado não existe")
+              )
           .build();
     }
   }
