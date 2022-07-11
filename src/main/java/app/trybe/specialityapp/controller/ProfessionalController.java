@@ -6,12 +6,14 @@ import app.trybe.specialityapp.service.ProfessionalService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,13 @@ public class ProfessionalController {
    */
   @GET
   @Path("/all")
-  @Consumes("application/json")
-  @Produces("application/json")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
   public Response findAll() {
     List<Professional> professionalList = service.professionalList();
     if (professionalList.size() == 0) {
-      return Response.status(Response.Status.NOT_FOUND).entity(
+      return Response.status(404)
+          .entity(
           new ApplicationError(Response.Status.NOT_FOUND, "Nenhum registro foi encontrado!"))
           .build();
     }
@@ -72,6 +75,27 @@ public class ProfessionalController {
       return Response.status(Response.Status.NOT_FOUND).entity(
           new ApplicationError(Response.Status.NOT_FOUND,
           "Não é possível editar, o ID informado não existe"))
+          .build();
+    }
+  }
+
+  /**
+   * delete.
+   */
+  @DELETE
+  @Path("/delete/{id}")
+  @Consumes("application/json")
+  @Produces("application/json")
+  public Response delete(@PathParam("id") Integer id) {
+    try {
+      service.deleteProfessionalById(id);
+      return Response.status(Response.Status.OK).entity("ID [" + id + "] removido").build();
+    } catch (NoSuchElementException e) {
+      return Response.status(404)
+          .entity(
+          new ApplicationError(
+          Response.Status.NOT_FOUND,
+          "Não é possível deletar, o ID informado não existe"))
           .build();
     }
   }
