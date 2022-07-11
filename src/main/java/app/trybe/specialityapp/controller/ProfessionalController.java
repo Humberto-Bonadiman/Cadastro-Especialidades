@@ -6,6 +6,7 @@ import app.trybe.specialityapp.service.ProfessionalService;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
@@ -33,5 +34,23 @@ public class ProfessionalController {
           .build();
     }
     return Response.status(Response.Status.OK).entity(professionalList).build();
+  }
+
+  /**
+   * insert.
+   */
+  @POST
+  @Path("/add")
+  @Consumes("application/json")
+  @Produces("application/json")
+  public Response insert(Professional professional) {
+    if (professional.getId() != null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(
+          new ApplicationError(
+          Response.Status.BAD_REQUEST, "Não é permitido inserir novos registros com ID explícito"))
+          .build();
+    }
+    service.addProfessional(professional);
+    return Response.status(Response.Status.CREATED).entity("Inserido").build();
   }
 }
